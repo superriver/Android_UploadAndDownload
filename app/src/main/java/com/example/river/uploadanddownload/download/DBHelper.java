@@ -6,13 +6,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.river.uploadanddownload.upload.*;
+
 /**
  * Created by Administrator on 2017/10/19.
  */
 
 public class DBHelper extends SQLiteOpenHelper{
 
-    private static  String TABLE_NAME = "file";
+    public static  String TABLE_NAME = "file";
     public DBHelper(Context context) {
         super(context, "download.db", null, 1);
     }
@@ -21,14 +23,14 @@ public class DBHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table file (fileName varchar,url varchar,length integer,finished integer)");
+        db.execSQL("create table file (_id integer primary key autoincrement ,sourceid varchar(10),fileName varchar,filePath varchar,length integer,finished integer)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
     }
-    public void insert(SQLiteDatabase db,FileInfo info){
+    public void insert(SQLiteDatabase db, FileInfo info){
         try {
             ContentValues cv = new ContentValues();
             cv.put("fileName",info.getFileName());
@@ -41,7 +43,7 @@ public class DBHelper extends SQLiteOpenHelper{
 
     }
 
-    public FileInfo queryData(SQLiteDatabase db,String url){
+    public FileInfo queryData(SQLiteDatabase db, String url){
         Cursor cursor = db.query(true,TABLE_NAME,null,"url=?",new String[]{url},null,null,null,null);
         FileInfo info = new FileInfo();
         if(cursor!=null){
@@ -56,3 +58,4 @@ public class DBHelper extends SQLiteOpenHelper{
         return info;
     }
 }
+

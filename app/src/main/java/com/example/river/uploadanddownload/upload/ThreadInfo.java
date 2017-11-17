@@ -5,4 +5,6 @@ package com.example.river.uploadanddownload.upload;
  */
 
 public class ThreadInfo {
+    private int threadId;
+
 }

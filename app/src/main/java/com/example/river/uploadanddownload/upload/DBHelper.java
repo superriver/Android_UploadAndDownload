@@ -12,7 +12,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper{
 
-    private static  String TABLE_NAME = "file";
+    public static  String TABLE_NAME = "file";
     public DBHelper(Context context) {
         super(context, "download.db", null, 1);
     }
@@ -21,7 +21,7 @@ public class DBHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table file (fileName varchar,url varchar,length integer,finished integer)");
+        db.execSQL("create table file (_id integer primary key autoincrement ,sourceid varchar(10),fileName varchar,filePath varchar,length integer,finished integer)");
     }
 
     @Override

@@ -7,10 +7,13 @@ import java.io.Serializable;
  */
 
 public class FileInfo implements Serializable{
+
+
+  private String sourceId;
   private String fileName;
   private String url;
   //文件的大小
-  private int len;
+  private long len;
 
   //文件结束位置
   private int finished;
@@ -49,11 +52,11 @@ public FileInfo(String fileName,String url){
     this.url = url;
   }
 
-  public int getLen() {
+  public long getLen() {
     return len;
   }
 
-  public void setLen(int len) {
+  public void setLen(long len) {
     this.len = len;
   }
 
@@ -72,5 +75,13 @@ public FileInfo(String fileName,String url){
 
   public void setFileName(String fileName) {
     this.fileName = fileName;
+  }
+
+  public String getSourceId() {
+    return sourceId;
+  }
+
+  public void setSourceId(String sourceId) {
+    this.sourceId = sourceId;
   }
 }

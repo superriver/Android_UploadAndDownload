@@ -1,25 +1,46 @@
 package com.example.river.uploadanddownload.upload;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.daimajia.numberprogressbar.NumberProgressBar;
 import com.example.river.uploadanddownload.R;
 
+import java.io.File;
+import java.io.OutputStream;
+import java.io.PushbackInputStream;
+import java.io.RandomAccessFile;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
     private Button start;
     private Button restart;
-
+    private List<String> images = new ArrayList<>();
+    private List<Bitmap> bitmapList = new ArrayList<>();
     private NumberProgressBar mProgressBar;
     private FileInfo fileInfo;
     private ProgressBroadcast receiver;
+
+    private DBManager dbManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         restart = (Button) findViewById(R.id.restart);
         mProgressBar = (NumberProgressBar) findViewById(R.id.number_progress_bar);
 
-        fileInfo = checkDB();
+        //fileInfo = checkDB();
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,6 +97,82 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void add(View view) {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("video/*;image/*");
+        startActivityForResult(intent, 0);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case 0:
+                    //   Cursor cursor = getContentResolver().query()
+//                    String filePath = null;
+//                    Uri originalUri = data.getData();
+//                    if(originalUri.toString().startsWith("file://")){
+//                        filePath = originalUri.getPath();
+//                        if(!filePath.endsWith(".mp4")){
+//                            Toast.makeText(MainActivity.this, "不支持该格式", Toast.LENGTH_SHORT).show();
+//                            return;
+//                        }
+//                    }else {
+//
+//                    }
+                    Uri selectVideo = data.getData();
+                    String[] filePath = {MediaStore.Video.Media.DATA};
+                    Cursor cursor = getContentResolver().query(selectVideo, filePath, null, null, null);
+                    cursor.moveToFirst();
+                    int columnIndex = cursor.getColumnIndex(filePath[0]);
+                    String videoPath = cursor.getString(columnIndex);
+                    File file = new File(videoPath);
+                    fileInfo.setUrl(videoPath);
+                    fileInfo.setFileName(file.getName());
+                    fileInfo.setLen(file.length());
+                    Toast.makeText(MainActivity.this, videoPath, Toast.LENGTH_SHORT).show();
+                    cursor.close();
+
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void getThumbnail() {
+        ContentResolver cr = getContentResolver();
+        Uri uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+        String[] proj = {MediaStore.Video.Media._ID
+                , MediaStore.Video.Media.DATA,
+                MediaStore.Video.Media.SIZE,
+                MediaStore.Video.Media.DISPLAY_NAME};
+        Cursor cursor = cr.query(
+                uri, proj, MediaStore.Video.Media.MIME_TYPE + "=?",
+                new String[]{"video/mp4"}, MediaStore.Video.Media.DATE_MODIFIED + "desc");
+        if (cursor.moveToFirst()) {
+            int _data = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+            int columnIndex = cursor.getColumnIndex(MediaStore.Video.Media._ID);
+            do {
+                String path = cursor.getString(_data);
+                int anInt = cursor.getInt(columnIndex);
+                images.add(path);
+                Bitmap bitmap = MediaStore.Video.Thumbnails.getThumbnail(cr, anInt, MediaStore.Video.Thumbnails.MINI_KIND, null);
+                bitmapList.add(bitmap);
+
+            } while (cursor.moveToNext());
+
+        }
+        cursor.close();
+        handler.sendEmptyMessage(0);
+
+    }
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+        }
+    };
 
     @Override
     protected void onDestroy() {
@@ -83,18 +180,5 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(receiver);
     }
 
-    private FileInfo checkDB(){
-         DBHelper dbHelper = new DBHelper(MainActivity.this);
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-         fileInfo= dbHelper.queryData(db,"http://183.230.81.12/cache/www.21yey.com/clientdownload/android/family.apk?ich_args2=91-26160505055589_e397871097a3544eecf5cc68b13fd45e_10001002_9c896425d7c3f4d0953d518939a83798_11e53421bdc95c93f9bfa93fadb17663");
-            if (fileInfo.getFinished() > 0) {
-                mProgressBar.setProgress(fileInfo.getFinished() * 100 / fileInfo.getLen());
-                start.setText("继续");
-            }else {
-                fileInfo = new FileInfo("family.apk", "http://183.230.81.12/cache/www.21yey.com/clientdownload/android/family.apk?ich_args2=91-26160505055589_e397871097a3544eecf5cc68b13fd45e_10001002_9c896425d7c3f4d0953d518939a83798_11e53421bdc95c93f9bfa93fadb17663");
 
-            }
-        return fileInfo;
-
-    }
 }

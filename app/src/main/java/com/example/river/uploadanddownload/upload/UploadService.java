@@ -19,10 +19,8 @@ public class UploadService extends Service{
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        TaskManager task =  TaskManager.getInstance();
+        TaskManager task =  new TaskManager(UploadService.this);
         FileInfo fileInfo = (FileInfo) intent.getSerializableExtra("fileInfo");
-
-        new InitThread(fileInfo).start();
         if(intent.getAction().equals("start")){
             if(fileInfo.isDownloading()){
                 task.start(UploadService.this,fileInfo);
@@ -39,14 +37,5 @@ public class UploadService extends Service{
     }
 
 
-    class InitThread extends Thread{
-        private FileInfo fileInfo;
-        public InitThread(  FileInfo fileInfo){
-            this.fileInfo = fileInfo;
-        }
-        @Override
-        public void run() {
 
-        }
-    }
 }

@@ -80,6 +80,7 @@ public class DownloadTask extends Thread{
             File file = new File(FILE_PATH,info.getFileName());
             raf= new RandomAccessFile(file,"rwd");
             raf.seek(start);
+            long time = System.currentTimeMillis();
             finished += info.getFinished();
             if(connection.getResponseCode() == 206){
                 InputStream is =connection.getInputStream();
@@ -95,11 +96,14 @@ public class DownloadTask extends Thread{
                         db.close();
                         return;
                     }
-                    Log.d("huang","gg"+finished);
-                    Intent intent = new Intent(DownloadService.ACTION_UPDATE);
-                    intent.putExtra("finished",finished*100/length);
-                    intent.setAction("android.intent.action.ProgressBroadcast");
-                    context.sendBroadcast(intent);
+                    if(System.currentTimeMillis()-time>500) {
+                        time = System.currentTimeMillis();
+                        Intent intent = new Intent(DownloadService.ACTION_UPDATE);
+                        intent.putExtra("finished", finished * 100 / length);
+                        intent.setAction("android.intent.action.ProgressBroadcast");
+                        context.sendBroadcast(intent);
+
+                    }
                 }
                 info.setDownloading(false);
                 dbHelper.insert(db,info);
