@@ -1,1 +1,1 @@
-include ':app', ':multipletask'
+include ':app', ':multipletask', ':socketdemo'

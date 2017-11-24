@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 /**
  * Created by Administrator on 2017/10/18.
@@ -23,8 +24,10 @@ public class UploadService extends Service{
         FileInfo fileInfo = (FileInfo) intent.getSerializableExtra("fileInfo");
         if(intent.getAction().equals("start")){
             if(fileInfo.isDownloading()){
+                Log.d("huang","start->");
                 task.start(UploadService.this,fileInfo);
             }else {
+                Log.d("huang","stop->");
                 task.stop();
             }
 

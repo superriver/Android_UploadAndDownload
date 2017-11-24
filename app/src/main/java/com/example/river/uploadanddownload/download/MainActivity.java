@@ -86,12 +86,12 @@ public class MainActivity extends AppCompatActivity {
     private FileInfo checkDB(){
          DBHelper dbHelper = new DBHelper(MainActivity.this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-         fileInfo= dbHelper.queryData(db,"http://183.230.81.12/cache/www.21yey.com/clientdownload/android/family.apk?ich_args2=91-26160505055589_e397871097a3544eecf5cc68b13fd45e_10001002_9c896425d7c3f4d0953d518939a83798_11e53421bdc95c93f9bfa93fadb17663");
+         fileInfo= dbHelper.queryData(db,"http://www.21yey.com/clientdownload/android/family.apk");
             if (fileInfo.getFinished() > 0) {
                 mProgressBar.setProgress(fileInfo.getFinished() * 100 / fileInfo.getLen());
                 start.setText("继续");
             }else {
-                fileInfo = new FileInfo("family.apk", "http://183.230.81.12/cache/www.21yey.com/clientdownload/android/family.apk?ich_args2=91-26160505055589_e397871097a3544eecf5cc68b13fd45e_10001002_9c896425d7c3f4d0953d518939a83798_11e53421bdc95c93f9bfa93fadb17663");
+                fileInfo = new FileInfo("family.apk", "http://www.21yey.com/clientdownload/android/family.apk");
 
             }
         return fileInfo;

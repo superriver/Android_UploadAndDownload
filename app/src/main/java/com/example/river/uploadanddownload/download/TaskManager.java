@@ -13,7 +13,6 @@ import java.util.Map;
 
 public class TaskManager {
     private Map<String,FileInfo>  map = new HashMap<>();
-
     private boolean isPause;
     public static class TaskHolder{
         private static final TaskManager instance = new TaskManager();
@@ -22,24 +21,12 @@ public class TaskManager {
         return TaskHolder.instance;
     }
 
-    private LinkedList<DownloadTask> tasks = new LinkedList<>();
-    //添加任务
-    public void addTask(DownloadTask task){
-        tasks.add(task);
-    }
-
-    public LinkedList<DownloadTask> getTasks(){
-        return tasks;
-    }
-    //删除任务
-
 
     //恢复任务
     public void start(Context context,FileInfo fileInfo){
         if(map.get(fileInfo.getUrl())==null){
             map.put(fileInfo.getUrl(),fileInfo);
         }
-
         DownloadTask task = new DownloadTask(map.get(fileInfo.getUrl()),context);
         isPause = false;
         task.start();
@@ -62,7 +49,6 @@ public class TaskManager {
         start(context,fileInfo);
     }
     public boolean isPause() {
-
         return isPause;
     }
 

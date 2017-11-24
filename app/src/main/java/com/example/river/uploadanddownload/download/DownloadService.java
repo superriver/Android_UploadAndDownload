@@ -22,7 +22,6 @@ public class DownloadService extends Service{
         TaskManager task =  TaskManager.getInstance();
         FileInfo fileInfo = (FileInfo) intent.getSerializableExtra("fileInfo");
 
-        new InitThread(fileInfo).start();
         if(intent.getAction().equals("start")){
             if(fileInfo.isDownloading()){
                 task.start(DownloadService.this,fileInfo);
@@ -39,14 +38,5 @@ public class DownloadService extends Service{
     }
 
 
-    class InitThread extends Thread{
-        private   FileInfo fileInfo;
-        public InitThread(  FileInfo fileInfo){
-            this.fileInfo = fileInfo;
-        }
-        @Override
-        public void run() {
 
-        }
-    }
 }

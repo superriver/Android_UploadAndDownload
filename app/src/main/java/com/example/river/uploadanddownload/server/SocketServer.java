@@ -1,5 +1,7 @@
 package com.example.river.uploadanddownload.server;
 
+import android.util.Log;
+
 import com.example.river.uploadanddownload.upload.StreamTool;
 
 import java.io.File;
@@ -37,12 +39,14 @@ public class SocketServer {
 
     public static void main(String[] args) throws Exception {
         SocketServer server = new SocketServer(7878);
+        System.out.println("服务端启动.....");
         server.start();
     }
 
     public void start() throws IOException {
         ss = new ServerSocket(port);
         while (!quit){
+            System.out.println("start");
             Socket socket = ss.accept();
             executorService.execute(new SocketTask(socket));
         }
@@ -81,8 +85,8 @@ public class SocketServer {
                     File file=null;
                     int position =0;
                     if(fileLog==null){
-                        String path = new SimpleDateFormat("yyyy/MM/dd/HH/mm").format(new Date());
-                        File dir = new File(uploadPath+path);
+                       // String path = new SimpleDateFormat("yyyy/MM/dd/HH/mm").format(new Date());
+                        File dir = new File(uploadPath);
                         if(!dir.exists()) dir.mkdirs();
                         file = new File(dir,fileName);
                         if(file.exists()){
@@ -113,7 +117,7 @@ public class SocketServer {
                         fileOutStream.write(buffer,0,len);
                         length+=len;
                         Properties properties = new Properties();
-                        properties.put("length",String.valueOf(length));
+                        properties.put("fileLen",String.valueOf(length));
                         FileOutputStream fileOutputStream = new FileOutputStream(new File(file.getParentFile(),file.getName()+".log"));
                         properties.store(fileOutputStream,null);
                        // fileLog.close()
@@ -131,7 +135,9 @@ public class SocketServer {
             }finally {
                 try {
                     if(socket != null && !socket.isClosed()) socket.close();
-                } catch (IOException e) {}
+                } catch (IOException e) {
+
+                }
             }
         }
     }

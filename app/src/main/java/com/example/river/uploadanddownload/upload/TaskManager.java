@@ -19,12 +19,10 @@ public class TaskManager {
     private static final String requestPath = "";
     private boolean isPause;
     private DBHelper dbHelper;
-    private SQLiteDatabase db;
     private Context context;
     public TaskManager(Context context){
         this.context = context;
         dbHelper = new DBHelper(context);
-        db =dbHelper.getReadableDatabase();
     }
 
     private LinkedList<UploadTask> tasks = new LinkedList<>();
@@ -41,8 +39,9 @@ public class TaskManager {
 
     //恢复任务
     public void start(Context context,FileInfo fileInfo){
-        new InitThread(fileInfo).start();
-        UploadThread uploadThread = new UploadThread(fileInfo,context);
+        //new InitThread(fileInfo).start();
+
+        UploadThread uploadThread = new UploadThread(fileInfo,context,dbHelper);
         UploadTask uploadTask = new UploadTask(uploadThread);
         uploadTask.download();
     }
@@ -91,8 +90,7 @@ public class TaskManager {
         @Override
         public void run() {
             if(fileInfo!=null){
-                dbHelper.insert(db,fileInfo);
-
+                //dbHelper.insert(db,fileInfo);
             }
             handler.obtainMessage(1).sendToTarget();
 

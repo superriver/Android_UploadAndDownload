@@ -25,7 +25,7 @@ public class DBManager {
             cv.put("fileName",info.getFileName());
             cv.put("filePath",info.getUrl());
             cv.put("fileLen",info.getLen());
-            cv.put("finished",info.getFinished());
+            //cv.put("finished",info.getFinished());
             db.insert(DBHelper.TABLE_NAME,null,cv);
         }catch (Exception e){
 

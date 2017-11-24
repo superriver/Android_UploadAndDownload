@@ -30,10 +30,11 @@ public class UploadThread extends Thread {
     private String uploadPath;
     private int finished = 0;//当前已下载完成的进度
     private FileInfo fileInfo;
-    public UploadThread( FileInfo fileInfo,Context context){
+    public UploadThread( FileInfo fileInfo,Context context,DBHelper dbHelper){
         this.fileInfo = fileInfo;
+        this.context = context;
+        dbManager = new DBManager(dbHelper);
     }
-
 
     @Override
     public void run() {
@@ -42,7 +43,7 @@ public class UploadThread extends Thread {
                         String sourceid =dbManager.getBindId(fileInfo);
                         String head= "Content-Length="+fileInfo.getLen()+";filename="+fileInfo.getFileName()+";sourceid="+
                                 (sourceid==null?"":sourceid)+"\r\n";
-                        Socket socket = new Socket("127.0.0.1",7878);
+                        Socket socket = new Socket("192.168.1.29",7878);
                         OutputStream outputStream = socket.getOutputStream();
                         outputStream.write(head.getBytes());
 
@@ -65,12 +66,11 @@ public class UploadThread extends Thread {
                         while ((len=fileOutStream.read(buffer))!=-1){
                             outputStream.write(buffer,0,len);
                             length+=len;
-//                            Message msg = new Message();
-//                            msg.getData().putInt("size",length);
+                            Log.d("huang","fileInfo->"+length * 100 / fileInfo.getLen());
                             if(System.currentTimeMillis()-time>500) {
                                 time = System.currentTimeMillis();
                                 Intent intent = new Intent(DownloadService.ACTION_UPDATE);
-                                intent.putExtra("finished", length * 100 / fileInfo.getLen());
+                                intent.putExtra("finished",  length * 100 / (int)fileInfo.getLen());
                                 intent.setAction("android.intent.action.ProgressBroadcast");
                                 context.sendBroadcast(intent);
                             }
@@ -82,6 +82,7 @@ public class UploadThread extends Thread {
                         socket.close();
 
                     }catch (Exception e){
+                        System.err.print(e.getMessage());
                         e.fillInStackTrace();
                     }
     }

@@ -115,10 +115,5 @@ public class DownloadTask extends Thread{
     }
 
 
-    private Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-        }
-    };
+
 }

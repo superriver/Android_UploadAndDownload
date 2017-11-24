@@ -12,29 +12,30 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper{
 
-    public static  String TABLE_NAME = "file";
+    public static  String TABLE_NAME = "uploadlog";
     public DBHelper(Context context) {
         super(context, "download.db", null, 1);
+        System.out.print("DBHelper");
     }
 
 
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table file (_id integer primary key autoincrement ,sourceid varchar(10),fileName varchar,filePath varchar,length integer,finished integer)");
+        System.out.print("onCreate");
+        db.execSQL("create table uploadlog (_id integer primary key autoincrement ,sourceid varchar(10),fileName varchar,filePath varchar,fileLen integer)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        System.out.print("onUpgrade");
     }
     public void insert(SQLiteDatabase db,FileInfo info){
         try {
             ContentValues cv = new ContentValues();
             cv.put("fileName",info.getFileName());
             cv.put("url",info.getUrl());
-            cv.put("length",info.getLen());
-            cv.put("finished",info.getFinished());
+            cv.put("fileLen",info.getLen());
             db.insert(TABLE_NAME,null,cv);
         }catch (Exception e){
         }

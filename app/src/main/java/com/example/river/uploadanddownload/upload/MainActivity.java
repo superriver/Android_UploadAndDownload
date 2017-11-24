@@ -16,8 +16,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daimajia.numberprogressbar.NumberProgressBar;
@@ -39,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private NumberProgressBar mProgressBar;
     private FileInfo fileInfo;
     private ProgressBroadcast receiver;
-
+    private TextView textView;
     private DBManager dbManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         start = (Button) findViewById(R.id.start);
         restart = (Button) findViewById(R.id.restart);
         mProgressBar = (NumberProgressBar) findViewById(R.id.number_progress_bar);
-
+        textView = (TextView) findViewById(R.id.path);
         //fileInfo = checkDB();
 
         start.setOnClickListener(new View.OnClickListener() {
@@ -93,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             int progress = intent.getIntExtra("finished", 0);
+            Log.d("huang","progress->"+progress);
             mProgressBar.setProgress(progress);
         }
     }
@@ -127,9 +130,14 @@ public class MainActivity extends AppCompatActivity {
                     cursor.moveToFirst();
                     int columnIndex = cursor.getColumnIndex(filePath[0]);
                     String videoPath = cursor.getString(columnIndex);
+
+                    if(videoPath==null||videoPath.equals("")){
+                        textView.setText("不存在路径");
+                        return;
+                    }
+                    textView.setText(videoPath);
                     File file = new File(videoPath);
-                    fileInfo.setUrl(videoPath);
-                    fileInfo.setFileName(file.getName());
+                    fileInfo = new FileInfo(file.getName(),file.getAbsolutePath());
                     fileInfo.setLen(file.length());
                     Toast.makeText(MainActivity.this, videoPath, Toast.LENGTH_SHORT).show();
                     cursor.close();
