@@ -17,14 +17,14 @@ import java.util.Map;
 public class TaskManager {
     private Map<String,FileInfo>  map = new HashMap<>();
     private static final String requestPath = "";
-    private boolean isPause;
     private DBHelper dbHelper;
-    private Context context;
-    public TaskManager(Context context){
-        this.context = context;
-        dbHelper = new DBHelper(context);
+    private UploadThread uploadThread;
+    public static class TaskHolder{
+        private static final TaskManager instance = new TaskManager();
     }
-
+    public static TaskManager getInstance(){
+        return TaskHolder.instance;
+    }
     private LinkedList<UploadTask> tasks = new LinkedList<>();
     //添加任务
     public void addTask(UploadTask task){
@@ -39,15 +39,16 @@ public class TaskManager {
 
     //恢复任务
     public void start(Context context,FileInfo fileInfo){
+        UploadThread.isPause = false;
+        dbHelper = new DBHelper(context);
         //new InitThread(fileInfo).start();
-
-        UploadThread uploadThread = new UploadThread(fileInfo,context,dbHelper);
+        uploadThread = new UploadThread(fileInfo,context,dbHelper);
         UploadTask uploadTask = new UploadTask(uploadThread);
         uploadTask.download();
     }
 
     public void stop(){
-        isPause =true;
+        UploadThread.isPause=true;
     }
     public void restart(Context context,FileInfo fileInfo){
         try {
@@ -62,14 +63,7 @@ public class TaskManager {
         }
         start(context,fileInfo);
     }
-    public boolean isPause() {
 
-        return isPause;
-    }
-
-    public void setPause(boolean pause) {
-        isPause = pause;
-    }
 
     private Handler handler = new Handler(){
         @Override

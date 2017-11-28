@@ -94,12 +94,14 @@ public class SocketServer {
                         }
                         save(id,file);
                     }else {
+
                         file = new File(fileLog.getPath());
                         if(file.exists()){
                             File logFile = new File(file.getParentFile(),file.getName()+".log");
                             Properties properties = new Properties();
                             properties.load(new FileInputStream(logFile));
-                            position = Integer.valueOf(properties.getProperty("length"));
+                            System.out.println(" else ->"+properties.getProperty("fileLen"));
+                            position = Integer.parseInt(properties.getProperty("fileLen"));
                         }
                     }
 
@@ -107,23 +109,23 @@ public class SocketServer {
                     String response = "sourceid="+id+";position="+position+"\r\n";
                     outputStream.write(response.getBytes());
 
-                    RandomAccessFile fileOutStream = new RandomAccessFile(file,"rwd");
-                    if(position==0) fileOutStream.setLength(Integer.valueOf(fileLen));
-                    fileOutStream.seek(position);
+                    RandomAccessFile randomAccessFile = new RandomAccessFile(file,"rwd");
+                    if(position==0) randomAccessFile.setLength(Integer.valueOf(fileLen));
+                    randomAccessFile.seek(position);
                     byte[] buffer = new byte[1024];
                     int len = -1;
                     int length = position;
                     while ((len=inputStream.read(buffer))!=-1){
-                        fileOutStream.write(buffer,0,len);
+                        randomAccessFile.write(buffer,0,len);
                         length+=len;
                         Properties properties = new Properties();
                         properties.put("fileLen",String.valueOf(length));
                         FileOutputStream fileOutputStream = new FileOutputStream(new File(file.getParentFile(),file.getName()+".log"));
                         properties.store(fileOutputStream,null);
-                       // fileLog.close()
+                        fileOutputStream.close();
                     }
-                    if(length==fileOutStream.length()) delete(id);
-                    fileOutStream.close();
+                    if(length==randomAccessFile.length()) delete(id);
+                    randomAccessFile.close();
                     inputStream.close();
                     outputStream.close();
                     file = null;

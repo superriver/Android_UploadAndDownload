@@ -20,20 +20,19 @@ public class UploadService extends Service{
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        TaskManager task =  new TaskManager(UploadService.this);
         FileInfo fileInfo = (FileInfo) intent.getSerializableExtra("fileInfo");
         if(intent.getAction().equals("start")){
             if(fileInfo.isDownloading()){
                 Log.d("huang","start->");
-                task.start(UploadService.this,fileInfo);
+                TaskManager.getInstance().start(UploadService.this,fileInfo);
             }else {
                 Log.d("huang","stop->");
-                task.stop();
+                TaskManager.getInstance().stop();
             }
 
         }
        if(intent.getAction().equals("restart")){
-           task.restart(UploadService.this,fileInfo);
+           TaskManager.getInstance().restart(UploadService.this,fileInfo);
         }
 
         return super.onStartCommand(intent, flags, startId);

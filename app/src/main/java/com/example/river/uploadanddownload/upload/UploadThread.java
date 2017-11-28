@@ -7,7 +7,8 @@ import android.os.Environment;
 import android.os.Message;
 import android.util.Log;
 
-import com.example.river.uploadanddownload.download.DownloadService;
+import com.example.river.uploadanddownload.download.*;
+import com.example.river.uploadanddownload.download.TaskManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +31,8 @@ public class UploadThread extends Thread {
     private String uploadPath;
     private int finished = 0;//当前已下载完成的进度
     private FileInfo fileInfo;
+    public static boolean isPause;
+
     public UploadThread( FileInfo fileInfo,Context context,DBHelper dbHelper){
         this.fileInfo = fileInfo;
         this.context = context;
@@ -62,18 +65,22 @@ public class UploadThread extends Thread {
                         byte[] buffer = new byte[1024];
                         int len = -1;
                         long time = System.currentTimeMillis();
-                        int length = Integer.valueOf(position);
-                        while ((len=fileOutStream.read(buffer))!=-1){
+                        long length = Integer.valueOf(position);
+                        long fileLen = fileInfo.getLen();
+
+                        while (!isPause&&(len=fileOutStream.read(buffer))!=-1){
+                            Log.d("huang","-->"+isPause);
                             outputStream.write(buffer,0,len);
                             length+=len;
-                            Log.d("huang","fileInfo->"+length * 100 / fileInfo.getLen());
-                            if(System.currentTimeMillis()-time>500) {
-                                time = System.currentTimeMillis();
-                                Intent intent = new Intent(DownloadService.ACTION_UPDATE);
-                                intent.putExtra("finished",  length * 100 / (int)fileInfo.getLen());
-                                intent.setAction("android.intent.action.ProgressBroadcast");
-                                context.sendBroadcast(intent);
-                            }
+//                            if(System.currentTimeMillis()-time>500) {
+//
+//                            }
+//                            time = System.currentTimeMillis();
+                            Intent intent = new Intent(DownloadService.ACTION_UPDATE);
+                            int progress = Math.round (length * 100 /fileLen );
+                            intent.putExtra("finished", progress);
+                            intent.setAction("android.intent.action.ProgressBroadcast");
+                            context.sendBroadcast(intent);
 
                         }
                         fileOutStream.close();

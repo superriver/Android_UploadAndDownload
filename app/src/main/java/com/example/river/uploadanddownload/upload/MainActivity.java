@@ -95,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             int progress = intent.getIntExtra("finished", 0);
-            Log.d("huang","progress->"+progress);
             mProgressBar.setProgress(progress);
         }
     }
@@ -139,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
                     File file = new File(videoPath);
                     fileInfo = new FileInfo(file.getName(),file.getAbsolutePath());
                     fileInfo.setLen(file.length());
-                    Toast.makeText(MainActivity.this, videoPath, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, file.length()/(1024*1024)+"", Toast.LENGTH_SHORT).show();
                     cursor.close();
 
             }
