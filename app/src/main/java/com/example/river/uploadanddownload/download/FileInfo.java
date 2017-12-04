@@ -15,7 +15,6 @@ public class FileInfo implements Serializable{
   //文件结束位置
   private int finished;
 
-  private boolean isPause;
   private boolean isDownloading;
   public FileInfo(){
 
@@ -24,13 +23,6 @@ public FileInfo(String fileName,String url){
     this.fileName = fileName;
     this.url = url;
 }
-  public boolean isPause() {
-    return isPause;
-  }
-
-  public void setPause(boolean pause) {
-    isPause = pause;
-  }
 
   public boolean isDownloading() {
     return isDownloading;

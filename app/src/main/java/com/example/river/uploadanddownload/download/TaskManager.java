@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class TaskManager {
     private Map<String,FileInfo>  map = new HashMap<>();
-    private boolean isPause;
+    public static boolean isPause;
     public static boolean isCancel;
     public static class TaskHolder{
         private static final TaskManager instance = new TaskManager();
@@ -52,12 +52,6 @@ public class TaskManager {
         }
         start(context,fileInfo);
     }
-    public boolean isPause() {
-        return isPause;
-    }
 
-    public void setPause(boolean pause) {
-        isPause = pause;
-    }
 
 }

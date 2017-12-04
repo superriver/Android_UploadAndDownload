@@ -87,7 +87,7 @@ public class DownloadTask extends Thread{
                     raf.write(bytes,0,len);
                     finished+=len;
                     info.setFinished(finished);
-                    if(TaskManager.getInstance().isPause()){
+                    if(TaskManager.isPause){
                         info.setDownloading(false);
                         dbHelper.insert(db,info);
                         db.close();
