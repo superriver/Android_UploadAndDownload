@@ -8,13 +8,7 @@
     android:orientation="vertical"
     tools:context=".download.MainActivity"
     >
-  <Button
-      android:gravity="center"
-      android:onClick="add"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="添加上传文件"
-      />
+
   <TextView
       android:id="@+id/path"
       android:layout_width="wrap_content"
@@ -44,6 +38,13 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="重新开始" />
+  <!--<Button-->
+      <!--android:gravity="center"-->
+      <!--android:id="@+id/cancel"-->
+      <!--android:layout_width="wrap_content"-->
+      <!--android:layout_height="wrap_content"-->
+      <!--android:text="取消"-->
+      <!--/>-->
 
 </LinearLayout>
 

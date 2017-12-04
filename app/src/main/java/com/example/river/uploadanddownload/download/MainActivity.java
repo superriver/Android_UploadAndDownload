@@ -16,6 +16,7 @@ import com.example.river.uploadanddownload.R;
 public class MainActivity extends AppCompatActivity {
     private Button start;
     private Button restart;
+    private Button cancel;
 
     private NumberProgressBar mProgressBar;
     private FileInfo fileInfo;
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         start = (Button) findViewById(R.id.start);
         restart = (Button) findViewById(R.id.restart);
+       /// cancel = (Button) findViewById(R.id.cancel);
         mProgressBar = (NumberProgressBar) findViewById(R.id.number_progress_bar);
 
         fileInfo = checkDB();
@@ -60,12 +62,19 @@ public class MainActivity extends AppCompatActivity {
                 startService(intent);
             }
         });
+//        cancel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
         receiver = new ProgressBroadcast();
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.intent.action.ProgressBroadcast");
 //注册receiver
         registerReceiver(receiver, filter);
     }
+
 
     public class ProgressBroadcast extends BroadcastReceiver {
 

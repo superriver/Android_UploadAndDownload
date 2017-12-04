@@ -23,7 +23,7 @@ public class DBHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table file (_id integer primary key autoincrement ,sourceid varchar(10),fileName varchar,filePath varchar,length integer,finished integer)");
+        db.execSQL("create table file (_id integer primary key autoincrement ,fileName varchar,url varchar,length integer,finished integer)");
     }
 
     @Override
@@ -43,6 +43,9 @@ public class DBHelper extends SQLiteOpenHelper{
 
     }
 
+    public void delete(SQLiteDatabase db,String url){
+        db.delete(TABLE_NAME,"url=?",new String[]{url});
+    }
     public FileInfo queryData(SQLiteDatabase db, String url){
         Cursor cursor = db.query(true,TABLE_NAME,null,"url=?",new String[]{url},null,null,null,null);
         FileInfo info = new FileInfo();

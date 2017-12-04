@@ -21,7 +21,6 @@ import java.net.URL;
 
 public class DownloadTask extends Thread{
     public static String FILE_PATH = Environment.getExternalStorageDirectory() + "/river";//文件下载保存路径
-    public static final  String BROADCAST_ACTION = "broadcast";
     private Context context;
     private  FileInfo info;
     private DBHelper dbHelper;
@@ -59,7 +58,6 @@ public class DownloadTask extends Thread{
             info.setLen(length);
             conn.disconnect();
         } catch (IOException e) {
-            Log.d("huang","e--"+e.getMessage());
             e.printStackTrace();
         }
 
@@ -80,7 +78,6 @@ public class DownloadTask extends Thread{
             File file = new File(FILE_PATH,info.getFileName());
             raf= new RandomAccessFile(file,"rwd");
             raf.seek(start);
-            long time = System.currentTimeMillis();
             finished += info.getFinished();
             if(connection.getResponseCode() == 206){
                 InputStream is =connection.getInputStream();
@@ -96,21 +93,25 @@ public class DownloadTask extends Thread{
                         db.close();
                         return;
                     }
-                    if(System.currentTimeMillis()-time>500) {
-                        time = System.currentTimeMillis();
                         Intent intent = new Intent(DownloadService.ACTION_UPDATE);
                         intent.putExtra("finished", finished * 100 / length);
                         intent.setAction("android.intent.action.ProgressBroadcast");
                         context.sendBroadcast(intent);
-
-                    }
                 }
                 info.setDownloading(false);
-                dbHelper.insert(db,info);
-                db.close();
+
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            if(raf!=null) {
+                try {
+                    raf.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            db.close();
         }
     }
 

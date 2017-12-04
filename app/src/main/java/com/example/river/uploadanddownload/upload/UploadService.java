@@ -11,7 +11,6 @@ import android.util.Log;
  */
 
 public class UploadService extends Service{
-    public static final String ACTION_UPDATE = "update";
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
