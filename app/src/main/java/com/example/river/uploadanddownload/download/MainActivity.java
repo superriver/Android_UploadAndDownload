@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         start = (Button) findViewById(R.id.start);
         restart = (Button) findViewById(R.id.restart);
-       /// cancel = (Button) findViewById(R.id.cancel);
+        cancel = (Button) findViewById(R.id.cancel);
         mProgressBar = (NumberProgressBar) findViewById(R.id.number_progress_bar);
 
         fileInfo = checkDB();
@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, DownloadService.class);
                 if (fileInfo.isDownloading()) {
-                    fileInfo.setPause(true);
                     fileInfo.setDownloading(false);
                     start.setText("继续");
                 } else {
@@ -62,12 +61,17 @@ public class MainActivity extends AppCompatActivity {
                 startService(intent);
             }
         });
-//        cancel.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//            }
-//        });
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                start.setText("开始");
+                fileInfo.setDownloading(false);
+                Intent intent = new Intent(MainActivity.this, DownloadService.class);
+                intent.setAction("cancel");
+                intent.putExtra("fileInfo", fileInfo);
+                startService(intent);
+            }
+        });
         receiver = new ProgressBroadcast();
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.intent.action.ProgressBroadcast");

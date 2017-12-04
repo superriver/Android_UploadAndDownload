@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 public class DownloadService extends IntentService{
     public static final String ACTION_START = "start";
     public static final String ACTION_RESTART = "restart";
+    public static final String ACTION_CANCEL = "cancel";
     public static final String ACTION_UPDATE = "update";
 
     public DownloadService() {
@@ -32,6 +33,9 @@ public class DownloadService extends IntentService{
         }
         if(intent.getAction().equals(ACTION_RESTART)){
             task.restart(DownloadService.this,fileInfo);
+        }
+        if(intent.getAction().equals(ACTION_CANCEL)){
+            task.cancel();
         }
 
     }

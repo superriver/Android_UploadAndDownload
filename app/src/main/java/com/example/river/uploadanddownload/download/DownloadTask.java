@@ -93,6 +93,18 @@ public class DownloadTask extends Thread{
                         db.close();
                         return;
                     }
+                    if(TaskManager.isCancel){
+                        TaskManager.isCancel = false;
+                        info.setDownloading(false);
+                        info.setFinished(0);
+                        dbHelper.insert(db,info);
+                        db.close();
+                        Intent intent = new Intent(DownloadService.ACTION_UPDATE);
+                        intent.putExtra("finished", 0);
+                        intent.setAction("android.intent.action.ProgressBroadcast");
+                        context.sendBroadcast(intent);
+                        return;
+                    }
                         Intent intent = new Intent(DownloadService.ACTION_UPDATE);
                         intent.putExtra("finished", finished * 100 / length);
                         intent.setAction("android.intent.action.ProgressBroadcast");
@@ -111,7 +123,6 @@ public class DownloadTask extends Thread{
                     e.printStackTrace();
                 }
             }
-            db.close();
         }
     }
 

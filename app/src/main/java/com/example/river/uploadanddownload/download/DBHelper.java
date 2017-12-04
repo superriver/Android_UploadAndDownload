@@ -44,7 +44,7 @@ public class DBHelper extends SQLiteOpenHelper{
     }
 
     public void delete(SQLiteDatabase db,String url){
-        db.delete(TABLE_NAME,"url=?",new String[]{url});
+        db.delete(TABLE_NAME,"url = ?",new String[]{url});
     }
     public FileInfo queryData(SQLiteDatabase db, String url){
         Cursor cursor = db.query(true,TABLE_NAME,null,"url=?",new String[]{url},null,null,null,null);

@@ -14,6 +14,7 @@ import java.util.Map;
 public class TaskManager {
     private Map<String,FileInfo>  map = new HashMap<>();
     private boolean isPause;
+    public static boolean isCancel;
     public static class TaskHolder{
         private static final TaskManager instance = new TaskManager();
     }
@@ -34,6 +35,9 @@ public class TaskManager {
 
     public void stop(){
         isPause =true;
+    }
+    public void cancel(){
+        isCancel = true;
     }
     public void restart(Context context,FileInfo fileInfo){
         try {
